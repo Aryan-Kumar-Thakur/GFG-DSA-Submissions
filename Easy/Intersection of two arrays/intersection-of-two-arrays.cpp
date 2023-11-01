@@ -13,21 +13,21 @@ class Solution {
     // the intersection of two arrays.
     int NumberofElementsInIntersection(int a[], int b[], int n, int m) {
         // Your code goes here
-         unordered_map<int,int>mp;
-       
-       for(int i=0; i<n; i++){
-           mp[a[i]]++;
-       }
-       int count=0;
-       for(int i=0; i<m; i++){
-           if(mp.find(b[i])!=mp.end()){
-               count++;
-               mp.erase(b[i]);
-           }
-       }
-       return count;
+        unordered_map<int,bool> mp;
+        for(int i=0;i<n;i++){
+            mp[a[i]]=true;
+        }
+        int cnt=0;
+        for(int i=0;i<m;i++){
+            if(mp[b[i]]){
+                cnt++;
+                mp[b[i]]=false;
+            }
+        }
+        return cnt;
     }
 };
+
 
 //{ Driver Code Starts.
 int main() {
