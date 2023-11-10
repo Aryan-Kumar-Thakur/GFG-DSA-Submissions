@@ -5,35 +5,19 @@ using namespace std;
 // } Driver Code Ends
 class Solution{   
 public:
-    string printMinNumberForPattern(string s){
+    string printMinNumberForPattern(string S){
         // code here 
-        int i=1;
-        int n=s.size();
-        string ans(n+1,'$');
-        int j=0,k=0;
-        while(j<n && k<n){
-            if(s[j]=='I'){
-                ans[j]=i+'0';
-                i++;
-                j++;
-                k++;
-            }
-            else{
-                while(s[j]=='D' && j<n){
-                    j++;
+        int n = S.size();
+        string ans;
+        stack<char> st;
+        for(int i=0;i<=n;i++){
+            st.push(i+1+'0');
+            if(S[i]=='I' || i==n){
+                while(!st.empty()){
+                    ans+=st.top();
+                    st.pop();
                 }
-                int m=j;
-                while(j>=k){
-                    ans[j]=i+'0';
-                    i++;
-                    j--;
-                }
-                j=m+1;
-                k=m+1;
             }
-        }
-        if(s[n-1]=='I'){
-            ans[n]=i+'0';
         }
         return ans;
     }
