@@ -10,9 +10,31 @@ using namespace std;
 
 class Solution
 {
-    public:
-    vector<vector<int>> dp;
-    bool check(int i, int j, vector<vector<int>> &mat)
+    //using bfs algo beacuse no need for checking min path len, at the time we will reach last column will be minimum path length itself
+    
+    // void makeUnsafeCell(vector<vector<int>> &mat, int m, int n, int delRow[], int delCol[])
+    // {
+    //     for(int i = 0; i < m; i++)
+    //     {
+    //         for(int j = 0; j < n; j++)
+    //         {
+    //             if(mat[i][j] == 0)
+    //             {
+    //                 for(int k = 0; k < 4; k++)
+    //                 {
+    //                     int nr = i + delRow[k];
+    //                     int nc = j + delCol[k];
+    //                     if(nr>=0 && nr<m && nc>=0 && nc<n)
+    //                     {
+    //                         mat[nr][nc] = 0;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    
+     bool check(int i, int j, vector<vector<int>> &mat)
     {
         int n = mat.size(), m = mat[0].size();
         if(mat[i][j] == 0) return 0;
@@ -22,50 +44,48 @@ class Solution
         if(j-1 >=0 && mat[i][j-1] == 0) return 0;
         return 1;
     }
-    int solve(int i, int j, vector<vector<int>> &mat, vector<vector<int>> &vis)
-    {
-        int n = mat.size(), m = mat[0].size();
-        if(j == m-1) return 1;
-        
-        if(dp[i][j] != -1) return dp[i][j];
-        vis[i][j] = 1;
-        
-        int dr[] = {0,1,0,-1};
-        int dc[] = {-1,0,1,0};
-        int ans = 1e9;
-        for(int ind = 0; ind<4; ind++)
-        {
-            int newi = i + dr[ind];
-            int newj = j + dc[ind];
-            
-            if(newi < n && newi >=0 && newj < m && newj >=0 && 
-            check(newi, newj, mat) && !vis[newi][newj])
-            {
-                int temp = 1 + solve(newi, newj, mat, vis);
-                ans = min(ans, temp);
-            }
-            
-        }
-        vis[i][j] = 0;
-        
-        return dp[i][j]=ans;
-    }
+    
+public:
     int findShortestPath(vector<vector<int>> &mat)
     {
-       int n = mat.size(), m = mat[0].size();
-       dp = vector<vector<int>> (n, vector<int> (m, -1));
-       vector<vector<int>> vis(n, vector<int> (m ,0 ));
-       int ans = 1e9;
-      for(int i=0; i<n; i++)
-      {
-          if(check(i,0, mat))
-          {
-            ans = min(ans, solve(i, 0, mat, vis));
-          }
-          
-      }
-       if(ans == 1e9) return -1;
-       return ans;
+       // code here
+       int m = mat.size();
+       int n = mat[0].size();
+       //making all neighbouring cells of land,ines also as 0, means we cannot travel there
+       int delRow[] = {-1, 0, +1, 0};
+       int delCol[] = {0, +1, 0, -1};
+    //   makeUnsafeCell(mat, m, n, delRow, delCol);
+       
+       //performing bfs algo
+       queue<pair<int, pair<int, int>>> q; //{dist, {row, col}}
+       vector<vector<int>> vis(m, vector<int>(n, 0));
+       for(int i = 0; i < m; i++)
+       {
+           if(check(i,0,mat)){
+               q.push({1, {i, 0}});
+           }
+       }
+       
+       while(! q.empty())
+       {
+           auto it = q.front();
+           int dist = it.first;
+           int r = it.second.first;
+           int c = it.second.second;
+           q.pop();
+           if(c == n - 1) return dist;
+           vis[r][c] = 1;
+           for(int k = 0; k < 4; k++)
+           {
+                int nr = r + delRow[k];
+                int nc = c + delCol[k];
+                if(nr>=0 && nr<m && nc>=0 && nc<n && check(nr,nc,mat) && vis[nr][nc]==0)
+                {
+                    q.push({dist + 1, {nr, nc}});
+                }
+           }
+       }
+       return -1;
     }
 };
 
