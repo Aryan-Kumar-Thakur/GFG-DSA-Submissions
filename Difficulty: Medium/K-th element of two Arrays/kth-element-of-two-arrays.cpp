@@ -4,59 +4,76 @@ using namespace std;
 
 
 // } Driver Code Ends
-class Solution{
-    public:
-    int kthElement(int a[], int b[], int n1, int n2, int k)
-    {
-     if(n1 > n2) return kthElement(b, a, n2, n1, k);
-        int s = max(0, k - n2), e = min(k, n1);
-        int left = k;
-        while(s <= e){
-            
-            int mid1 = (s + e) / 2;
-            int l1 = -1e9, l2 = -1e9;
-            int r1 = 1e9, r2 = 1e9;
-            int mid2 = left - mid1;
-            
-            if(mid1 < n1) r1 = a[mid1];
-            if(mid2 < n2) r2 = b[mid2];
-            if(mid1 - 1 >= 0) l1 = a[mid1 - 1];
-            if(mid2 - 1 >= 0) l2 = b[mid2 - 1];
-            
-            if(l1 <= r2 && l2 <= r1)
-                return max(l1, l2);
-            
-            // Eliminate right half
-            else if(l1 > r2) e = mid1 - 1;
-            
-            // Eliminate left half
-            else s = mid1 + 1;
-            
+class Solution {
+  public:
+    int kthElement(int k, vector<int>& arr1, vector<int>& arr2) {
+        // code here
+        int n=arr1.size();
+        int m=arr2.size();
+        if(n>m){
+            return kthElement(k,arr2,arr1);
         }
-        
-        return 0;   
+        int lo=max(0,k-m),hi=min(n,k);
+        while(lo<=hi){
+            int px=lo+(hi-lo)/2;
+            int py=k-px;
+            int l1=INT_MIN,l2=INT_MIN,r1=INT_MAX,r2=INT_MAX;
+            if(px-1>=0){
+                l1=arr1[px-1];
+            }
+            if(px<n){
+                r1=arr1[px];
+            }
+            if(py-1>=0){
+                l2=arr2[py-1];
+            }
+            if(py<m){
+                r2=arr2[py];
+            }
+            if(l1<=r2 && l2<=r1){
+                return max(l1,l2);
+            }
+            else if(l1 > r2){
+                hi=px-1;
+            }
+            else{
+                lo=px+1;
+            }
+        }
+        return 1;
     }
 };
 
 //{ Driver Code Starts.
- 
+
 // Driver code
-int main()
-{
-	int t;
-	cin>>t;
-	while(t--){
-		int n,m,k;
-		cin>>n>>m>>k;
-		int arr1[n],arr2[m];
-		for(int i=0;i<n;i++)
-			cin>>arr1[i];
-		for(int i=0;i<m;i++)
-			cin>>arr2[i];
-		
-		Solution ob;
-        cout << ob.kthElement(arr1, arr2, n, m, k)<<endl;
-	}
+int main() {
+    int t;
+    cin >> t;
+    cin.ignore();
+    while (t--) {
+        int n, m, k;
+        cin >> k;
+        cin.ignore();
+        string input;
+        int num;
+        vector<int> arr1, arr2;
+
+        getline(cin, input);
+        stringstream s2(input);
+        while (s2 >> num) {
+            arr1.push_back(num);
+        }
+
+        getline(cin, input);
+        stringstream s3(input);
+        while (s3 >> num) {
+            arr2.push_back(num);
+        }
+
+        Solution ob;
+        cout << ob.kthElement(k, arr1, arr2) << endl;
+    }
     return 0;
 }
 // } Driver Code Ends
