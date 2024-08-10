@@ -25,29 +25,48 @@ struct Job
 
 class Solution 
 {
-    public:
-    static bool comp(Job a1,Job a2){
-        return (a1.profit > a2.profit); 
+    static bool comp(Job a,Job b){
+        return (a.profit > b.profit);
     }
+    // bool solve(vector<int> &temp,Job a){
+    //     int lo=1,hi=a.dead;
+    //     while(lo<=hi){
+    //         int mid=lo+(hi-lo)/2;
+    //         if(temp[mid]==1){
+    //             hi=mid-1;
+    //         }
+    //         else{
+    //             lo=mid+1;
+    //         }
+    //     }
+    //     if(temp[lo]==0){
+    //         cout<<lo<<endl;
+    //         temp[lo]=1;
+    //         return true;
+    //     }
+    //     return false;
+    // }
+    public:
     //Function to find the maximum profit and the number of jobs done.
     vector<int> JobScheduling(Job arr[], int n) 
     { 
         // your code here
-        vector<int> deadline(n+1,0);
         sort(arr,arr+n,comp);
-        int ans=0;
-        int cnt=0;
+        int cnt=0,profit=0;
+        vector<int> temp(1e5,0);
         for(int i=0;i<n;i++){
+            // cout<<arr[i].profit<<endl;
             int x=arr[i].dead;
-            while(deadline[x]!=0 && x>=1){
+            while(x>0 && temp[x]==1){
                 x--;
             }
-            if(x<1) continue;
-            deadline[x]=1;
-            ans+=arr[i].profit;
-            cnt++;
+            if(x>0){
+                cnt++;
+                profit+=arr[i].profit;
+                temp[x]=1;
+            }
         }
-        return {cnt,ans};
+        return {cnt,profit};
     } 
 };
 
